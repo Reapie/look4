@@ -123,7 +123,7 @@ void search_in_file(FILE *file, char *filename, const char *search)
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
-void iterate_files(const char *cur_dir, const char *search, short outer, short flags)
+void iterate_files(const char *cur_dir, const char *search, short outer, int flags)
 {
     DIR *d;
     struct dirent *dir;
