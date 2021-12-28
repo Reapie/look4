@@ -3,6 +3,10 @@
 
 typedef unsigned long long index_t;
 
+static const int flag_verbose = 0b001;
+
+static const int flag_recursive = 0b010;
+
 static const int ext_limiter = '.';
 
 static const int win_path = '\\';
@@ -16,6 +20,6 @@ char *file_name(char *path);
 char **extract_ext(char *filename);
 
 // iterates over all files starting from a directory, can be recursive and call itself on subdirectories
-void iterate_files(const char *cur_dir, const char *search, short outer, short recursive, short verbose);
+void iterate_files(const char *cur_dir, const char *search, short outer, short flags);
 
 #endif //LOOK4_FILE_H

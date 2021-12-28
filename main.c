@@ -14,8 +14,8 @@ void print_help(char *filename)
 
 int main(int argc, char **argv)
 {
-    short recursive = 0;
-    short verbose = 0;
+    // int for extra size
+    int flags = 0;
     char *search = NULL;
     if (argc < 2)
     {
@@ -36,10 +36,10 @@ int main(int argc, char **argv)
                     switch (argv[arg][idx])
                     {
                         case 'r':
-                            recursive = 1;
+                            flags |= flag_recursive;
                             break;
                         case 'v':
-                            verbose = 1;
+                            flags |= flag_verbose;
                             break;
                         case 'h':
                             print_help(argv[0]);
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            iterate_files(".", search, 1, recursive, verbose);
+            iterate_files(".", search, 1, flags);
         }
     }
     return 0;

@@ -123,7 +123,7 @@ void search_in_file(FILE *file, char *filename, const char *search)
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
-void iterate_files(const char *cur_dir, const char *search, short outer, short recursive, short verbose)
+void iterate_files(const char *cur_dir, const char *search, short outer, short flags)
 {
     DIR *d;
     struct dirent *dir;
@@ -141,9 +141,9 @@ void iterate_files(const char *cur_dir, const char *search, short outer, short r
                 FILE *file = fopen(filename, "r");
                 if (file == NULL)
                 {
-                    // is a directory
-                    if (recursive)
-                        iterate_files(filename, search, 0, recursive, verbose);
+                    // is a directory so recurse if enabled
+                    if (flags & flag_recursive)
+                        iterate_files(filename, search, 0, flags);
                 }
                 else
                 {
@@ -156,7 +156,9 @@ void iterate_files(const char *cur_dir, const char *search, short outer, short r
         }
         closedir(d);
     }
-    if (outer && verbose)
+
+    // only show stats if we are at the outermost level and verbose is enabled
+    if (flags & flag_verbose && outer)
         display_stats();
 }
 
