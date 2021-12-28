@@ -24,31 +24,42 @@ int main(int argc, char **argv)
     }
     else
     {
-        for (int i = 1; i < argc; ++i)
+        for (int arg = 1; arg < argc; ++arg)
         {
-            if (strcmp(argv[i], "-r") == 0)
+            if (argv[arg][0] == '-')
             {
-                recursive = 1;
-            }
-            else if (strcmp(argv[i], "-v") == 0)
-            {
-                verbose = 1;
-            }
-            else if (strcmp(argv[i], "-h") == 0)
-            {
-                print_help(argv[0]);
-                return 0;
+                // iterate over argument
+                index_t idx = 1;
+                while (argv[arg][idx])
+                {
+                    switch (argv[arg][idx])
+                    {
+                        case 'r':
+                            recursive = 1;
+                            break;
+                        case 'v':
+                            verbose = 1;
+                            break;
+                        case 'h':
+                            print_help(argv[0]);
+                            return 0;
+                        default:
+                            printf("Unknown flag: %c\n", argv[arg][idx]);
+                            return 1;
+                    }
+                    ++idx;
+                }
             }
             else
             {
-                search = argv[i];
+                search = argv[arg];
             }
         }
         if (search == NULL)
         {
             print_help(argv[0]);
             // debugging
-            //iterate_files(".", "UwU", 1, 1, 1);
+            // iterate_files(".", "UwU", 1, 1, 1);
             return 1;
         }
         else

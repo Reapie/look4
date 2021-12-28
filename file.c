@@ -146,6 +146,7 @@ void iterate_files(const char *cur_dir, const char *search, short outer, short r
                     search_in_file(file, filename, search);
                     ++filecount;
                     fclose(file);
+                    free(filename);
                 }
             }
         }
