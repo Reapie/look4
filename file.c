@@ -10,13 +10,13 @@
 
 index_t filecount = 0, matchcount = 0;
 
-char** extract_ext(char* filename)
+char **extract_ext(char *filename)
 {
     index_t len = strlen(filename);
     index_t idx = len - 1;
     index_t ext_len;
     char curr_char;
-    static char* file_info[2];
+    static char *file_info[2];
 
     while (idx >= 0)
     {
@@ -43,11 +43,11 @@ char** extract_ext(char* filename)
     return file_info;
 }
 
-char* file_name(char* path)
+char *file_name(char *path)
 {
     index_t len = strlen(path);
     index_t idx = len - 1;
-    char* name = path;
+    char *name = path;
 
     while (idx >= 0)
     {
@@ -65,7 +65,7 @@ char* file_name(char* path)
 
 void display_stats()
 {
-    printf("\nSearched %s%d%s files and found %s%d%s matches\n",
+    printf("Searched %s%d%s files and found %s%d%s matches\n",
            ANSI_COLOR_GREEN,
            filecount,
            ANSI_COLOR_RESET,
@@ -74,28 +74,20 @@ void display_stats()
            ANSI_COLOR_RESET);
 }
 
-void search_in_file(char* filename, const char* search, short recursive, short verbose)
+void search_in_file(FILE *file, char *filename, const char *search)
 {
-    // open file and search for search_in_file
-    FILE* file = fopen(filename, "r");
     int line_num = 1;
     char temp[512];
-    if(file == NULL) {
-        // is a directory
-        if (recursive)
-            iterate_files(filename, search, 0, recursive, verbose);
-        return;
-    }
-    ++filecount;
-    while(fgets(temp, 512, file) != NULL) {
-
-        char* found = (char *) strstr(temp, search);
-        if(found) {
+    while (fgets(temp, 512, file) != NULL)
+    {
+        char *found = (char *) strstr(temp, search);
+        if (found)
+        {
             size_t column = found - temp;
             size_t search_len = strlen(search);
             size_t line_len = strlen(temp);
 
-            char* before_match;
+            char *before_match;
             if (column == 0)
                 before_match = "";
             else
@@ -104,28 +96,48 @@ void search_in_file(char* filename, const char* search, short recursive, short v
                 before_match[column] = 0;
             }
 
-            char* after_match = temp + column + search_len;
+            char *after_match = temp + column + search_len;
             after_match[search_len - line_len] = 0;
 
             printf("%s> Line %4d, Char %4d: ", filename, line_num, column);
             printf("%s%s%s%s%s", before_match, ANSI_COLOR_GREEN, search, ANSI_COLOR_RESET, after_match);
+            // add a line break if file doesnt have one
+            if (after_match[strlen(after_match) - 1] != 0xa)
+                printf("\n");
             ++matchcount;
         }
-        line_num++;
+        ++line_num;
     }
 }
 
-void iterate_files(const char* cur_dir, const char* search, short outer, short recursive, short verbose) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
+void iterate_files(const char *cur_dir, const char *search, short outer, short recursive, short verbose)
+{
     DIR *d;
     struct dirent *dir;
     d = opendir(cur_dir);
-    if (d) {
-        while ((dir = readdir(d)) != NULL) {
-            if(dir->d_name[0] != '.')
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {
+            if (dir->d_name[0] != '.')
             {
-                char* path = strcpy(malloc(sizeof(cur_dir) + sizeof(dir->d_name)), cur_dir);
-                search_in_file(strcat(strcat(path, "/"), dir->d_name),
-                               search, recursive, verbose);
+                char *filename = strcpy(malloc(sizeof(cur_dir) + sizeof(dir->d_name)), cur_dir);
+                filename = strcat(strcat(filename, "/"), dir->d_name);
+                FILE *file = fopen(filename, "r");
+                if (file == NULL)
+                {
+                    // is a directory
+                    if (recursive)
+                        iterate_files(filename, search, 0, recursive, verbose);
+                }
+                else
+                {
+                    search_in_file(file, filename, search);
+                    ++filecount;
+                    fclose(file);
+                }
             }
         }
         closedir(d);
@@ -133,5 +145,7 @@ void iterate_files(const char* cur_dir, const char* search, short outer, short r
     if (outer && verbose)
         display_stats();
 }
+
+#pragma clang diagnostic pop
 
 

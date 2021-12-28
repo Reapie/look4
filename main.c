@@ -3,7 +3,7 @@
 
 #include "file.h"
 
-void print_help(char* filename)
+void print_help(char *filename)
 {
     printf("Usage: %s <string to look for>\n", file_name(filename));
     printf("Will search all files in the current directory for the string.\n");
@@ -12,15 +12,20 @@ void print_help(char* filename)
     printf("If the -h flag is given, will print this help message.\n");
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     short recursive = 0;
     short verbose = 0;
-    char* search = NULL;
-    if (argc < 2) {
+    char *search = NULL;
+    if (argc < 1)
+    {
         print_help(argv[0]);
         return 1;
-    } else {
-        for (int i = 1; i < argc; ++i) {
+    }
+    else
+    {
+        for (int i = 1; i < argc; ++i)
+        {
             if (strcmp(argv[i], "-r") == 0)
             {
                 recursive = 1;
@@ -33,7 +38,8 @@ int main(int argc, char** argv) {
             {
                 print_help(argv[0]);
                 return 0;
-            } else
+            }
+            else
             {
                 search = argv[i];
             }
@@ -41,9 +47,14 @@ int main(int argc, char** argv) {
         if (search == NULL)
         {
             print_help(argv[0]);
+            // debugging
+            //iterate_files(".", "UwU", 1, 1, 1);
             return 1;
         }
-        iterate_files(".", search, 1, recursive, verbose);
+        else
+        {
+            iterate_files(".", search, 1, recursive, verbose);
+        }
     }
     return 0;
 }
