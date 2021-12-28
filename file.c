@@ -88,12 +88,15 @@ void search_in_file(FILE *file, char *filename, const char *search)
             size_t line_len = strlen(temp);
 
             char *before_match;
-            if (column == 0)
+            short freeable = 0;
+            if (!column)
                 before_match = "";
             else
             {
-                before_match = strncpy(malloc(column), temp, column);
+                before_match = malloc(column);
+                strncpy(before_match, temp, column);
                 before_match[column] = 0;
+                freeable = 1;
             }
 
             char *after_match = temp + column + search_len;
@@ -101,11 +104,17 @@ void search_in_file(FILE *file, char *filename, const char *search)
 
             printf("%s> Line %4d, Char %4d: ", filename, line_num, column);
             printf("%s%s%s%s%s", before_match, ANSI_COLOR_GREEN, search, ANSI_COLOR_RESET, after_match);
+
             // add a line break if file doesnt have one
             if (after_match[strlen(after_match) - 1] != 0xa)
                 printf("\n");
+
+            // free memory if able to
+            if (freeable)
+                free(before_match);
+
             ++matchcount;
-        }
+            }
         ++line_num;
     }
 }
