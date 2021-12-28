@@ -15,6 +15,7 @@ char *file_name(char *path);
 // Returns an array of file basename and extension.
 char **extract_ext(char *filename);
 
+// iterates over all files starting from a directory, can be recursive and call itself on subdirectories
 void iterate_files(const char *cur_dir, const char *search, short outer, short recursive, short verbose);
 
 #endif //LOOK4_FILE_H

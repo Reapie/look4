@@ -89,6 +89,8 @@ void search_in_file(FILE *file, char *filename, const char *search)
 
             char *before_match;
             short freeable = 0;
+
+            // match is at the beginning of the line
             if (!column)
                 before_match = "";
             else
@@ -130,8 +132,10 @@ void iterate_files(const char *cur_dir, const char *search, short outer, short r
     {
         while ((dir = readdir(d)) != NULL)
         {
+            // dont include files or directories starting with .
             if (dir->d_name[0] != '.')
             {
+                // get the full path
                 char *filename = strcpy(malloc(sizeof(cur_dir) + sizeof(dir->d_name)), cur_dir);
                 filename = strcat(strcat(filename, "/"), dir->d_name);
                 FILE *file = fopen(filename, "r");

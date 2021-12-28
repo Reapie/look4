@@ -26,9 +26,10 @@ int main(int argc, char **argv)
     {
         for (int arg = 1; arg < argc; ++arg)
         {
+            // is arg a flag (or option)
             if (argv[arg][0] == '-')
             {
-                // iterate over argument
+                // iterate over chars of flag
                 index_t idx = 1;
                 while (argv[arg][idx])
                 {
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
                     ++idx;
                 }
             }
-            else
+            else // not a flag, must be search string
             {
                 search = argv[arg];
             }
@@ -58,8 +59,6 @@ int main(int argc, char **argv)
         if (search == NULL)
         {
             print_help(argv[0]);
-            // debugging
-            // iterate_files(".", "UwU", 1, 1, 1);
             return 1;
         }
         else
