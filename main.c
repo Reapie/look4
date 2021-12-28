@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     short recursive = 0;
     short verbose = 0;
     char *search = NULL;
-    if (argc < 1)
+    if (argc < 2)
     {
         print_help(argv[0]);
         return 1;
