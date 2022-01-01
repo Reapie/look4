@@ -74,40 +74,85 @@ void display_stats()
            ANSI_COLOR_RESET);
 }
 
-void search_in_file(FILE *file, char *filename, const char *search)
+char* copy_to_lower(char *str, char* new_str)
+{
+    index_t i = 0;
+    while (str[i] != 0)
+    {
+        if(str[i] >= 'A' && str[i] <= 'Z')
+        {
+            new_str[i] = str[i] + 32;
+        }
+        else
+        {
+            new_str[i] = str[i];
+        }
+        ++i;
+    }
+    new_str[i] = 0;
+    return new_str;
+}
+
+int find_offset(const char *str, const char *substr)
+{
+    index_t len = strlen(str);
+    index_t sub_len = strlen(substr);
+    int idx = 0;
+
+    while (idx < len)
+    {
+        if (strncmp(str + idx, substr, sub_len) == 0)
+            return idx;
+        ++idx;
+    }
+
+    return -1;
+}
+
+void search_in_file(FILE *file, char *filename, const char *search, short ignore_case)
 {
     int line_num = 1;
-    char temp[512];
-    while (fgets(temp, 512, file) != NULL)
+    char original[512];
+    char line[512];
+    while (fgets(original, 512, file) != NULL)
     {
-        char *found = (char *) strstr(temp, search);
-        if (found)
+        // search string already in lowercase
+        if(ignore_case)
+            copy_to_lower(original, line);
+        else
+            strncpy(line, original, 512);
+
+        int found = find_offset(line, search);
+        if (found != -1)
         {
-            size_t column = found - temp;
             size_t search_len = strlen(search);
-            size_t line_len = strlen(temp);
+            size_t line_len = strlen(line);
 
             char *before_match;
             short freeable = 0;
 
             // match is at the beginning of the line
-            if (!column)
+            if (!found)
                 before_match = "";
             else
             {
-                before_match = malloc(column);
-                strncpy(before_match, temp, column);
-                before_match[column] = 0;
+                before_match = malloc(found);
+                strncpy(before_match, original, found);
+                before_match[found] = 0;
                 freeable = 1;
             }
 
-            char *after_match = temp + column + search_len;
+            char* match = malloc(search_len);
+            match = strncpy(match, original + found, search_len);
+            match[search_len] = 0;
+
+            char *after_match = original + found + search_len;
             after_match[search_len - line_len] = 0;
 
-            printf("%s> Line %4d, Char %4d: ", filename, line_num, column);
-            printf("%s%s%s%s%s", before_match, ANSI_COLOR_GREEN, search, ANSI_COLOR_RESET, after_match);
+            printf("%s> Line %4d, Char %4d: ", filename, line_num, found);
+            printf("%s%s%s%s%s", before_match, ANSI_COLOR_GREEN, match, ANSI_COLOR_RESET, after_match);
 
-            // add a line break if file doesnt have one
+            // add a line break if current line doesnt have one
             if (after_match[strlen(after_match) - 1] != 0xa)
                 printf("\n");
 
@@ -115,6 +160,8 @@ void search_in_file(FILE *file, char *filename, const char *search)
             if (freeable)
                 free(before_match);
 
+            free(match);
+            //free(line);
             ++matchcount;
             }
         ++line_num;
@@ -147,7 +194,7 @@ void iterate_files(const char *cur_dir, const char *search, short outer, int fla
                 }
                 else
                 {
-                    search_in_file(file, filename, search);
+                    search_in_file(file, filename, search, flags & flag_ignore_case);
                     ++filecount;
                     fclose(file);
                     free(filename);

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 
 #include "file.h"
 
@@ -9,6 +8,7 @@ void print_help(char *filename)
     printf("Will search all files in the current directory for the string.\n");
     printf("If the -r flag is given, will search recursively.\n");
     printf("If the -v flag is given, will print a summary of scanned files and matches.\n");
+    printf("If the -i flag is given, will ignore case.\n");
     printf("If the -h flag is given, will print this help message.\n");
 }
 
@@ -41,6 +41,9 @@ int main(int argc, char **argv)
                         case 'v':
                             flags |= flag_verbose;
                             break;
+                        case 'i':
+                            flags |= flag_ignore_case;
+                            break;
                         case 'h':
                             print_help(argv[0]);
                             return 0;
@@ -63,6 +66,9 @@ int main(int argc, char **argv)
         }
         else
         {
+            if (flags & flag_ignore_case)
+                search = copy_to_lower(search, search);
+
             iterate_files(".", search, 1, flags);
         }
     }
