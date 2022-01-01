@@ -186,7 +186,7 @@ void iterate_files(const char *cur_dir, const char *search, short outer, int fla
                 // get the full path
                 char *filename = strcpy(malloc(sizeof(cur_dir) + sizeof(dir->d_name)), cur_dir);
                 filename = strcat(strcat(filename, "/"), dir->d_name);
-                FILE *file = fopen(filename, "r");
+                FILE *file = fopen(filename, "r+");
                 if (file == NULL)
                 {
                     // is a directory so recurse if enabled
