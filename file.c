@@ -73,12 +73,12 @@ void display_stats()
            ANSI_COLOR_RESET);
 }
 
-char* copy_to_lower(char *str, char* new_str)
+char *copy_to_lower(char *str, char *new_str)
 {
     index_t i = 0;
     while (str[i] != 0)
     {
-        if(str[i] >= 'A' && str[i] <= 'Z')
+        if (str[i] >= 'A' && str[i] <= 'Z')
         {
             new_str[i] = str[i] + 32;
         }
@@ -116,7 +116,7 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
     while (fgets(original, 512, file) != NULL)
     {
         // search string already in lowercase
-        if(ignore_case)
+        if (ignore_case)
             copy_to_lower(original, line);
         else
             strncpy(line, original, 512);
@@ -141,7 +141,7 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
                 freeable = 1;
             }
 
-            char* match = malloc(search_len);
+            char *match = malloc(search_len);
             match = strncpy(match, original + found, search_len);
             match[search_len] = 0;
 
@@ -161,13 +161,14 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
 
             free(match);
             ++matchcount;
-            }
+        }
         ++line_num;
     }
 }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
+
 void iterate_files(const char *cur_dir, const char *search, short outer, int flags)
 {
     DIR *d;
