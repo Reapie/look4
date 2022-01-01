@@ -125,8 +125,8 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
         else
             strncpy(line, original, 512);
 
-        int found = find_offset(line, search);
-        if (found != -1)
+        int offset = find_offset(line, search);
+        if (offset != -1)
         {
             size_t search_len = strlen(search);
 
@@ -134,23 +134,23 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
             short freeable = 0;
 
             // match is at the beginning of the line
-            if (!found)
+            if (!offset)
                 before_match = "";
             else
             {
-                before_match = malloc(found + 1);
-                strncpy(before_match, original, found);
-                before_match[found] = 0;
+                before_match = malloc(offset + 1);
+                strncpy(before_match, original, offset);
+                before_match[offset] = 0;
                 freeable = 1;
             }
 
             char *match = malloc(search_len + 1);
-            match = strncpy(match, original + found, search_len);
+            match = strncpy(match, original + offset, search_len);
             match[search_len] = 0;
 
-            char *after_match = original + found + search_len;
+            char *after_match = original + offset + search_len;
 
-            printf("%s> Line %4d, Char %4d: ", filename, line_num, found);
+            printf("%s> Line %4d, Char %4d: ", filename, line_num, offset);
             printf("%s%s%s%s%s", before_match, ANSI_COLOR_GREEN, match, ANSI_COLOR_RESET, after_match);
 
             // add a line break if current line doesnt have one
