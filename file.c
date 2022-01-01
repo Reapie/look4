@@ -13,8 +13,8 @@ index_t filecount = 0, matchcount = 0;
 char **extract_ext(char *filename)
 {
     index_t len = strlen(filename);
-    index_t idx = len - 1;
     index_t ext_len;
+    int idx = len - 1;
     char curr_char;
     static char *file_info[2];
 
