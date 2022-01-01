@@ -34,7 +34,6 @@ char **extract_ext(char *filename)
             strncpy(file_info[1], filename + idx + 1, ext_len);
             file_info[1][ext_len] = 0;
 
-            //printf("%s %s\n", file_info[0], file_info[1]);
             break;
         }
         --idx;
@@ -161,7 +160,6 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
                 free(before_match);
 
             free(match);
-            //free(line);
             ++matchcount;
             }
         ++line_num;
