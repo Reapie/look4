@@ -18,6 +18,10 @@ char **extract_ext(char *filename)
     char curr_char;
     static char *file_info[2];
 
+    // values if no extension exists
+    file_info[0] = filename;
+    file_info[1] = "";
+
     while (idx >= 0)
     {
         curr_char = filename[idx];
