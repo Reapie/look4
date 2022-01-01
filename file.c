@@ -129,7 +129,6 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
         if (found != -1)
         {
             size_t search_len = strlen(search);
-            size_t line_len = strlen(line);
 
             char *before_match;
             short freeable = 0;
@@ -139,18 +138,17 @@ void search_in_file(FILE *file, char *filename, const char *search, short ignore
                 before_match = "";
             else
             {
-                before_match = malloc(found);
+                before_match = malloc(found + 1);
                 strncpy(before_match, original, found);
                 before_match[found] = 0;
                 freeable = 1;
             }
 
-            char *match = malloc(search_len);
+            char *match = malloc(search_len + 1);
             match = strncpy(match, original + found, search_len);
             match[search_len] = 0;
 
             char *after_match = original + found + search_len;
-            after_match[search_len - line_len] = 0;
 
             printf("%s> Line %4d, Char %4d: ", filename, line_num, found);
             printf("%s%s%s%s%s", before_match, ANSI_COLOR_GREEN, match, ANSI_COLOR_RESET, after_match);
