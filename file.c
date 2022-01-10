@@ -96,7 +96,7 @@ char *copy_to_lower(char *str, char *new_str)
     return new_str;
 }
 
-int find_offset(const char *str, const char *substr)
+int find_offset_slow(const char *str, const char *substr)
 {
     index_t len = strlen(str);
     index_t sub_len = strlen(substr);
@@ -110,6 +110,16 @@ int find_offset(const char *str, const char *substr)
     }
 
     return -1;
+}
+
+int find_offset(const char *str, const char *substr)
+{
+    char* ptr = strstr(str, substr);
+
+    if (ptr == NULL)
+        return -1;
+
+    return ptr - str;
 }
 
 void search_in_file(FILE *file, char *filename, const char *search, short ignore_case)
